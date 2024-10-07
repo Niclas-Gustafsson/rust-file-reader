@@ -1,5 +1,5 @@
 use std::{
-    env::{self, current_exe},
+    env::{self},
     fs::{self, DirEntry},
     io::{BufRead, BufReader, Result},
     path::{Path, PathBuf},
@@ -60,7 +60,6 @@ fn read_folder(dir: &Path, current_path: &Path) -> Result<(u64, u64)> {
                 lines_in_files += sub_lines;
             } else if path.is_file() {
                 // count files and lines
-                println!("{:?}", path.file_name());
                 files += 1;
                 lines_in_files += read_file(&path)?;
             }
@@ -86,6 +85,7 @@ fn check_ignored(file: &Path, current_file: &DirEntry) -> Result<bool> {
     // Read ignore file, parse lines into vec, check file_name passed as arg against all lines in ignore vec. return boolean if true ignore file, else read it.
     let mut should_ignore: bool = false;
     let ignore_file_path = file.to_str();
+    //Hardcoded a second time with leading slash because it works.
     let ignore_filename = "\\nicignore.txt";
 
     let file = fs::File::open(ignore_file_path.unwrap().to_owned() + ignore_filename)?;
@@ -96,10 +96,10 @@ fn check_ignored(file: &Path, current_file: &DirEntry) -> Result<bool> {
             if current_file.file_name().to_str()
                 == Some(line.as_ref().unwrap().to_string().as_str())
             {
-                println!(
-                    "File exists in ignore file, the file is: {:?}",
-                    current_file.file_name().to_str()
-                );
+                // println!(
+                //     "File exists in ignore file, the file is: {:?}",
+                //     current_file.file_name().to_str()
+                // );
                 should_ignore = true;
             }
         }
